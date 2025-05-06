@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import * as d3 from "d3";
 
 class Visualization2 extends Component {
-  constructor(props) {
+  constructor(props){
     super(props);
     this.state = {
       buckets: 1
@@ -13,26 +13,23 @@ class Visualization2 extends Component {
     this.renderChart();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.data !== this.props.data || prevState.buckets !== this.state.buckets) {
+  componentDidUpdate() {
       this.renderChart();
     }
-  }
-
+  
   groupDataByAgeBucket = (data, buckets) => {
     const grouped = {};
     const minAge = d3.min(data, d => +d.age);
-
-    for (let age = Math.floor(minAge/buckets)*buckets;age <= 40;age += buckets) {
+    for (let age = Math.floor(minAge/buckets)*buckets;age <= 40;age+=buckets) {
       const key = `${age}-${age + buckets}`;
-      grouped[key] = { ageGroup: key, depression: 0, no_depression: 0 };
+      grouped[key] = { ageGroup:key, depression: 0, no_depression:0};
     }
 
     data.forEach(d => {
       const age = +d.age;
       const bucket = Math.floor(age/buckets)*buckets;
       const key = `${bucket}-${bucket + buckets}`;
-      const depressed = +d.depression > 0 ? "depression" : "no_depression";
+      const depressed = +d.depression > 0 ? "depression":"no_depression";
 
       if (grouped[key]) {
         grouped[key][depressed]++;
@@ -57,10 +54,9 @@ class Visualization2 extends Component {
     const innerHeight = height - margin.top - margin.bottom;
 
     const svg = d3.select("#vis2");
-    svg.selectAll("*").remove();
     svg.attr("width", width).attr("height", height);
 
-    svg.append("text").attr("x", width / 2).attr("y", margin.top / 2).attr("text-anchor", "middle").style("font-size", "16px").style("font-weight", "bold")
+    svg.append("text").attr("x", width / 2).attr("y", margin.top/2).attr("text-anchor", "middle").style("font-size", "16px").style("font-weight", "bold")
     .text("Depression Count Per Age Group");
 
     const innerChart = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
@@ -77,20 +73,17 @@ class Visualization2 extends Component {
       .data(d => d).join("rect").attr("x", d => x(d.data.ageGroup)).attr("y", d => y(d[1])).attr("height", d => y(d[0])-y(d[1]))
       .attr("width", x.bandwidth());
 
-      innerChart.append("g").attr("transform", `translate(0, ${innerHeight})`).call(d3.axisBottom(x));
+    innerChart.append("g").attr("transform", `translate(0, ${innerHeight})`).call(d3.axisBottom(x));
 
-      innerChart.append("g").call(d3.axisLeft(y));
+    innerChart.append("g").call(d3.axisLeft(y));
 
-      innerChart.append("text").attr("x", innerWidth / 2).attr("y", innerHeight + 50).attr("text-anchor", "middle").style("font-size", "14px")
+    innerChart.append("text").attr("x", innerWidth/2).attr("y", innerHeight + 50).attr("text-anchor", "middle").style("font-size", "14px")
       .text("Age Group");
 
-      innerChart.append("text").attr("transform", "rotate(-90)").attr("x", -innerHeight / 2).attr("y", -45).attr("text-anchor", "middle").style("font-size", "14px")
+    innerChart.append("text").attr("transform", "rotate(-90)").attr("x", -innerHeight/2).attr("y", -45).attr("text-anchor", "middle").style("font-size", "14px")
       .text("Number of People");
 
-    const legendData = [
-      { label: "No Depression", color: "blue" },
-      { label: "Depression", color: "orange" }
-    ];
+    const legendData = [{label: "No Depression", color: "blue"},{label: "Depression", color: "orange"} ];
 
     const legend = svg.append("g").attr("transform",`translate(${width-margin.right+20}, ${margin.top})`);
 
@@ -101,7 +94,7 @@ class Visualization2 extends Component {
     .attr("y", (d, i) => i*25+9).text(d=> d.label).style("font-size", "14px").attr("alignment-baseline", "middle");
   };
 
-  handleSliderChange = (e) => {
+  handleSliderChange =(e)=> {
     this.setState({ buckets: +e.target.value });
   };
 
@@ -114,7 +107,7 @@ class Visualization2 extends Component {
             Age Bucket Size: {this.state.buckets}
             <input type="range" min="1" max="10" step="1"
               value={this.state.buckets}
-              onChange={this.handleSliderChange}style={{ marginLeft: "10px" }} />
+              onChange={this.handleSliderChange}style={{marginLeft:"10px"}} />
           </label>
         </div>
       </div>
