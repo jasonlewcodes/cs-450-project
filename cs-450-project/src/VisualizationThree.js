@@ -47,13 +47,12 @@ class Visualization3 extends Component {
       d => d.city
     );
 
-    // 🔥 Filter: only cities with count > 0 + valid city-like names
     const filteredCounts = Array.from(rawDepressionCount.entries())
       .filter(([city, count]) =>
         count > 0 &&
         city &&
-        isNaN(city) &&                          // skip pure numbers
-        /^[A-Za-z\s-]+$/.test(city.trim())      // allow only letters, spaces, hyphens
+        isNaN(city) &&
+        /^[A-Za-z\s-]+$/.test(city.trim())
       )
       .sort((a, b) => d3.descending(a[1], b[1]));
 
@@ -78,7 +77,6 @@ class Visualization3 extends Component {
     const xAxis = d3.axisBottom(xScale);
     const yAxis = d3.axisLeft(yScale).ticks(10);
 
-    // ✅ Chart title
     svg.append("text")
       .attr("x", width / 2)
       .attr("y", margin.top / 2)
@@ -87,7 +85,6 @@ class Visualization3 extends Component {
       .style("font-weight", "bold")
       .text("Depression Count per City");
 
-    // Axes
     svg.append("g")
       .attr("transform", `translate(0, ${height - margin.bottom})`)
       .call(xAxis)
@@ -99,7 +96,6 @@ class Visualization3 extends Component {
       .attr("transform", `translate(${margin.left}, 0)`)
       .call(yAxis);
 
-    // Axis labels
     svg.append("text")
       .attr("text-anchor", "middle")
       .attr("transform", `translate(${width / 2}, ${height - 40})`)
@@ -112,22 +108,23 @@ class Visualization3 extends Component {
 
     const tooltip = d3.select(this.tooltipRef.current);
 
-    // Bars with transitions and tooltips
     svg.selectAll("rect")
       .data(sortedCities)
       .enter()
       .append("rect")
       .attr("x", d => xScale(d))
       .attr("width", xScale.bandwidth())
-      .attr("y", yScale(0)) // start from zero height
+      .attr("y", yScale(0))
       .attr("height", 0)
       .attr("fill", d => colorScale(depressionCount.get(d) || 0))
       .on("mouseover", (event, d) => {
         const count = depressionCount.get(d) || 0;
+        const [x, y] = d3.pointer(event, this.svgRef.current);
+
         tooltip.style("opacity", 1)
           .html(`<strong>${d}</strong><br/>${count} people`)
-          .style("left", `${event.pageX + 10}px`)
-          .style("top", `${event.pageY - 28}px`);
+          .style("left", `${x + 10}px`)
+          .style("top", `${y - 28}px`);
       })
       .on("mouseout", () => {
         tooltip.style("opacity", 0);

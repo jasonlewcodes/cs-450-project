@@ -5,6 +5,7 @@ class VisualizationFour extends Component {
   constructor(props) {
     super(props);
     this.svgRef = React.createRef();
+    this.tooltipRef = React.createRef();
   }
 
   componentDidMount() {
@@ -27,6 +28,7 @@ class VisualizationFour extends Component {
     if (!data || data.length === 0) return;
 
     const svg = d3.select(this.svgRef.current);
+    const tooltip = d3.select(this.tooltipRef.current);
     svg.selectAll('*').remove();
 
     const container = this.svgRef.current.parentElement;
@@ -52,11 +54,15 @@ class VisualizationFour extends Component {
       if (stressGroup) {
         const withHistory = stressGroup.get(true);
         const withHistorySum = withHistory ? d3.sum(withHistory, d => d.depression) : 0;
-        lineData.true.push({ x: stress, y: withHistorySum });
+        if (!isNaN(stress) && withHistorySum > 0) {
+          lineData.true.push({ x: stress, y: withHistorySum });
+        }
 
         const withoutHistory = stressGroup.get(false);
         const withoutHistorySum = withoutHistory ? d3.sum(withoutHistory, d => d.depression) : 0;
-        lineData.false.push({ x: stress, y: withoutHistorySum });
+        if (!isNaN(stress) && withoutHistorySum > 0) {
+          lineData.false.push({ x: stress, y: withoutHistorySum });
+        }
       }
     });
 
@@ -83,17 +89,15 @@ class VisualizationFour extends Component {
     const labels = { true: 'Family History: Yes', false: 'Family History: No' };
 
     Object.entries(lineData).forEach(([key, values]) => {
-      const filteredValues = values.filter(d => d.x !== undefined && d.y !== undefined && d.y !== null && !isNaN(d.y) && d.y > 0);
-
       svg.append('path')
-        .datum(filteredValues)
+        .datum(values)
         .attr('fill', 'none')
         .attr('stroke', colors[key])
         .attr('stroke-width', 2.5)
         .attr('d', line);
 
       svg.selectAll(`circle-${key}`)
-        .data(filteredValues)
+        .data(values)
         .enter()
         .append('circle')
         .attr('cx', d => xScale(d.x))
@@ -101,7 +105,19 @@ class VisualizationFour extends Component {
         .attr('r', 4)
         .attr('fill', colors[key])
         .attr('stroke', 'white')
-        .attr('stroke-width', 1);
+        .attr('stroke-width', 1)
+        .on('mouseover', (event, d) => {
+          const [x, y] = d3.pointer(event, this.svgRef.current);
+          tooltip.style('opacity', 1)
+            .html(`<strong>Financial Stress:</strong> ${d.x}<br/>
+                   <strong>Depression Count:</strong> ${d.y}<br/>
+                   <strong>Family History:</strong> ${key === 'true' ? 'Yes' : 'No'}`)
+            .style('left', `${x + 10}px`)
+            .style('top', `${y - 28}px`);
+        })
+        .on('mouseout', () => {
+          tooltip.style('opacity', 0);
+        });
     });
 
     const xAxis = d3.axisBottom(xScale).ticks(5).tickFormat(d => Math.round(d));
@@ -160,6 +176,22 @@ class VisualizationFour extends Component {
     return (
       <div style={{ width: '100%', textAlign: 'center', position: 'relative' }}>
         <svg ref={this.svgRef} style={{ display: 'block', margin: 'auto' }}></svg>
+        <div
+          ref={this.tooltipRef}
+          style={{
+            position: 'absolute',
+            textAlign: 'center',
+            width: 'auto',
+            height: 'auto',
+            padding: '6px',
+            fontSize: '12px',
+            background: 'lightsteelblue',
+            border: '1px solid #333',
+            borderRadius: '4px',
+            pointerEvents: 'none',
+            opacity: 0
+          }}
+        ></div>
       </div>
     );
   }
