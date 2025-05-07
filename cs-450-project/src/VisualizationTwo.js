@@ -54,6 +54,7 @@ class Visualization2 extends Component {
     const innerHeight = height - margin.top - margin.bottom;
 
     const svg = d3.select("#vis2");
+    svg.selectAll("*").remove();
     svg.attr("width", width).attr("height", height);
 
     svg.append("text").attr("x", width / 2).attr("y", margin.top/2).attr("text-anchor", "middle").style("font-size", "16px").style("font-weight", "bold")
