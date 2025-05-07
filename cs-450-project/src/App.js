@@ -35,7 +35,7 @@ class App extends Component {
             suicidalIdeation: d["Have you ever had suicidal thoughts ?"],
             workStudyHours: Number(d["Work/Study Hours"]),
             financialStress: Number(d["Financial Stress"]),
-            familyHistory: Boolean(d["Family History of Mental Illness"]),
+            familyHistory: d["Family History of Mental Illness"] === 'Yes',
             depression: Number(d["Depression"]),
           })),
         });
