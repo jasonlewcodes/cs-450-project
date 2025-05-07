@@ -48,8 +48,8 @@ class Visualization2 extends Component {
     const keys = ["no_depression", "depression"];
 
     const margin = { top: 50, right: 150, bottom: 70, left: 60 };
-    const width = 900;
-    const height = 500;
+    const width = 1500;
+    const height = 650;
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
