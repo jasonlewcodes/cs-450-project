@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/cs-450-project/static/css/main.f855e6bc.css",
-    "main.js": "/cs-450-project/static/js/main.738f821d.js",
+    "main.js": "/cs-450-project/static/js/main.e959d79a.js",
     "static/js/453.056b492a.chunk.js": "/cs-450-project/static/js/453.056b492a.chunk.js",
     "static/media/student_depression_dataset.csv": "/cs-450-project/static/media/student_depression_dataset.6787de747dd0c9f1c718.csv",
     "index.html": "/cs-450-project/index.html",
     "main.f855e6bc.css.map": "/cs-450-project/static/css/main.f855e6bc.css.map",
-    "main.738f821d.js.map": "/cs-450-project/static/js/main.738f821d.js.map",
+    "main.e959d79a.js.map": "/cs-450-project/static/js/main.e959d79a.js.map",
     "453.056b492a.chunk.js.map": "/cs-450-project/static/js/453.056b492a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f855e6bc.css",
-    "static/js/main.738f821d.js"
+    "static/js/main.e959d79a.js"
   ]
 }
